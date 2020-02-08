@@ -92,11 +92,14 @@ def test_fetch_tells(test_db):
     with database() as (conn, cursor):
         cursor.execute(
             """
-            INSERT INTO tells (channel, listener, message, recipient, sender)
-            VALUES ("#chan", "DiscordListener", "hi", "azul", "newuser"),
-            ("#notchan", "DiscordListener", "hi", "azul", "newuser"),
-            ("#chan", "IRCListener@irc.freenode.fake", "hi", "azul", "newuser"),
-            ("#chan", "DiscordListener", "hi", "notazul", "newuser")
+            INSERT INTO tells
+                (channel, listener, message, recipient, sender)
+            VALUES
+                ("#chan", "DiscordListener", "hi", "azul", "newuser"),
+                ("#notchan", "DiscordListener", "hi", "azul", "newuser"),
+                ("#chan", "IRCListener@irc.freenode.fake", "hi", "azul",
+                    "newuser"),
+                ("#chan", "DiscordListener", "hi", "notazul", "newuser")
             """
         )
         conn.commit()
@@ -110,8 +113,8 @@ def test_delete_tell(test_db):
             INSERT INTO tells (
                 id, channel, listener, message, recipient, sender
             ) VALUES
-            (1, "#chan", "DiscordListener", "hi", "azul", "newuser"),
-            (2, "#notchan", "DiscordListener", "hi", "azul", "newuser")
+                (1, "#chan", "DiscordListener", "hi", "azul", "newuser"),
+                (2, "#notchan", "DiscordListener", "hi", "azul", "newuser")
             """
         )
         conn.commit()

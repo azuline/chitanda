@@ -175,7 +175,7 @@ async def test_dispatch_command(monkeypatch):
 
             message.call_command.assert_called()
             listener.assert_not_called()
-            handler.assert_called_with(789)
+            handler.assert_called_with(789, source=message)
 
 
 @pytest.mark.asyncio

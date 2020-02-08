@@ -83,7 +83,9 @@ async def test_auth_only_decorator_generator():
     listener.is_authed.side_effect = coroutine(lambda *args, **kwargs: True)
     assert [1, 2, 3] == [
         n
-        async for n in auth_only(func)(Message(None, listener, 2, 'azul', 4, 5))
+        async for n in auth_only(func)(
+            Message(None, listener, 2, 'azul', 4, 5)
+        )
     ]
 
 
