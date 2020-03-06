@@ -80,9 +80,7 @@ class Chitanda:
         )
         try:
             for handler in self.message_handlers:
-                response = await handler(message)
-                if response:
-                    await self.handle_response(response, source=message)
+                await self.handle_response(handler(message), source=message)
 
             await self.dispatch_command(message)
         except BotError as e:
@@ -116,7 +114,9 @@ class Chitanda:
         response = Response.wrap(response, source)
         await self.call_response_handlers(response)
         await response.listener.message(
-            target=response.target, message=response.contents
+            target=response.target,
+            message=response.contents,
+            **response.kwargs,
         )
 
     async def call_response_handlers(self, response):

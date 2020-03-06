@@ -12,7 +12,9 @@ from chitanda.util import irc_unstyle, trim_message
 
 logger = logging.getLogger(__name__)
 
-REGEX = re.compile(r'\.?s/(.*?)(?<!\\)/(.*?)(?:(?<!\\)/([gi]{,2})?)?$')
+PATTERN = r'(?:\.| )?s/(.*?)(?<!\\)/(.*?)(?:(?<!\\)/([gi]{,2})?)?$'
+REGEX = re.compile(PATTERN)
+REGEX_WITH_PREFIX = re.compile(r'.sed +' + PATTERN)
 TIMEOUT = 1
 
 
@@ -28,7 +30,7 @@ async def on_message(message):
         match = REGEX.match(message.contents)
         if match:
             return await _substitute(match.groups(), message_log)
-        else:
+        elif not REGEX_WITH_PREFIX.match(message.contents):
             message_log.appendleft(
                 _format_message(
                     message.contents, message.author, message.listener
@@ -54,7 +56,7 @@ def _attach_message_log(listener):
 
 def _get_author(listener):
     if isinstance(listener, DiscordListener):
-        return f'<@{listener.user.id}>'
+        return str(listener.user.id)
     elif isinstance(listener, IRCListener):
         return listener.nickname
 

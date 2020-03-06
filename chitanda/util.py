@@ -51,7 +51,14 @@ class Response:
     def __init__(self, bot, listener, target, contents):
         self.listener = listener
         self.target = target
-        self.contents = contents
+
+        if isinstance(contents, dict):
+            self.contents = contents.pop('message')
+            self.target = contents.pop('target', target)
+            self.kwargs = contents
+        else:
+            self.contents = contents
+            self.kwargs = {}
 
     @classmethod
     def wrap(cls, response, source):
