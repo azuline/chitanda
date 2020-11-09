@@ -13,7 +13,7 @@ async def test_choose_integer():
             listener=None,
             target=None,
             author=None,
-            contents='1 - 4',
+            contents="1 - 4",
             private=False,
         )
     )
@@ -28,11 +28,11 @@ async def test_choose_string_comma():
             listener=None,
             target=None,
             author=None,
-            contents='a, b,    c',
+            contents="a, b,    c",
             private=False,
         )
     )
-    assert isinstance(response, str) and response in {'a', 'b', 'c'}
+    assert isinstance(response, str) and response in {"a", "b", "c"}
 
 
 @pytest.mark.asyncio
@@ -43,11 +43,11 @@ async def test_choose_string_space():
             listener=None,
             target=None,
             author=None,
-            contents='a b    c',
+            contents="a b    c",
             private=False,
         )
     )
-    assert isinstance(response, str) and response in {'a', 'b', 'c'}
+    assert isinstance(response, str) and response in {"a", "b", "c"}
 
 
 @pytest.mark.asyncio
@@ -59,7 +59,7 @@ async def test_choose_nothing():
                 listener=None,
                 target=None,
                 author=None,
-                contents='abc',
+                contents="abc",
                 private=False,
             )
         )

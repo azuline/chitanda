@@ -1,7 +1,6 @@
-from asyncio import coroutine
+from unittest.mock import AsyncMock, Mock, call
 
 import pytest
-from mock import Mock, call
 
 from chitanda.database import database
 from chitanda.errors import BotError
@@ -20,8 +19,8 @@ from chitanda.util import Message
 @pytest.mark.asyncio
 async def test_join():
     listener = Mock(
-        join=Mock(return_value=coroutine(lambda *args: True)()),
-        is_admin=coroutine(lambda *a: True),
+        join=AsyncMock(return_value=True),
+        is_admin=AsyncMock(return_value=True),
         spec=IRCListener,
     )
 
@@ -30,19 +29,19 @@ async def test_join():
             bot=None,
             listener=listener,
             target=None,
-            author='azul',
-            contents='#henlo',
+            author="azul",
+            contents="#henlo",
             private=False,
         )
     )
-    listener.join.assert_called_with('#henlo')
+    listener.join.assert_called_with("#henlo")
 
 
 @pytest.mark.asyncio
 async def test_part_no_args():
     listener = Mock(
-        part=Mock(return_value=coroutine(lambda *args: True)()),
-        is_admin=coroutine(lambda *a: True),
+        part=AsyncMock(return_value=True),
+        is_admin=AsyncMock(return_value=True),
         spec=IRCListener,
     )
 
@@ -50,20 +49,20 @@ async def test_part_no_args():
         Message(
             bot=None,
             listener=listener,
-            target='#henlo',
-            author='azul',
-            contents='',
+            target="#henlo",
+            author="azul",
+            contents="",
             private=False,
         )
     )
-    listener.part.assert_called_with('#henlo')
+    listener.part.assert_called_with("#henlo")
 
 
 @pytest.mark.asyncio
 async def test_part_channel_arg():
     listener = Mock(
-        part=Mock(return_value=coroutine(lambda *args: True)()),
-        is_admin=coroutine(lambda *a: True),
+        part=AsyncMock(return_value=True),
+        is_admin=AsyncMock(return_value=True),
         spec=IRCListener,
     )
 
@@ -71,20 +70,20 @@ async def test_part_channel_arg():
         Message(
             bot=None,
             listener=listener,
-            target='#henlo',
-            author='azul',
-            contents='#idontwantthis',
+            target="#henlo",
+            author="azul",
+            contents="#idontwantthis",
             private=False,
         )
     )
-    listener.part.assert_called_with('#idontwantthis')
+    listener.part.assert_called_with("#idontwantthis")
 
 
 @pytest.mark.asyncio
 async def test_part_no_channel():
     listener = Mock(
-        part=Mock(return_value=coroutine(lambda *args: True)()),
-        is_admin=coroutine(lambda *a: True),
+        part=AsyncMock(return_value=True),
+        is_admin=AsyncMock(return_value=True),
         spec=IRCListener,
     )
 
@@ -93,9 +92,9 @@ async def test_part_no_channel():
             Message(
                 bot=None,
                 listener=listener,
-                target='azul',
-                author='azul',
-                contents='',
+                target="azul",
+                author="azul",
+                contents="",
                 private=True,
             )
         )
@@ -103,10 +102,10 @@ async def test_part_no_channel():
 
 @pytest.mark.asyncio
 async def test_on_join(test_db):
-    listener = IRCListener(None, 'chitanda', 'irc.freenode.fake')
-    listener.nickname = 'chitanda'
-    listener.on_join = coroutine(lambda *args: True)
-    await on_join(listener, '#channel', 'chitanda')
+    listener = IRCListener(None, "chitanda", "irc.freenode.fake")
+    listener.nickname = "chitanda"
+    listener.on_join = AsyncMock(return_value=True)
+    await on_join(listener, "#channel", "chitanda")
     with database() as (conn, cursor):
         cursor.execute(
             """
@@ -119,10 +118,10 @@ async def test_on_join(test_db):
 
 @pytest.mark.asyncio
 async def test_on_join_other_user(test_db):
-    listener = IRCListener(None, 'chitanda', 'irc.freenode.fake')
-    listener.nickname = 'chitanda'
-    listener.on_join = coroutine(lambda *args: True)
-    await on_join(listener, '#channel', 'azul')
+    listener = IRCListener(None, "chitanda", "irc.freenode.fake")
+    listener.nickname = "chitanda"
+    listener.on_join = AsyncMock(return_value=True)
+    await on_join(listener, "#channel", "azul")
     with database() as (conn, cursor):
         cursor.execute(
             """
@@ -135,9 +134,9 @@ async def test_on_join_other_user(test_db):
 
 @pytest.mark.asyncio
 async def test_on_part(test_db):
-    listener = IRCListener(None, 'chitanda', 'irc.freenode.fake')
-    listener.nickname = 'chitanda'
-    listener.on_part = coroutine(lambda *args: True)
+    listener = IRCListener(None, "chitanda", "irc.freenode.fake")
+    listener.nickname = "chitanda"
+    listener.on_part = AsyncMock(return_value=True)
     with database() as (conn, cursor):
         cursor.execute(
             """
@@ -146,7 +145,7 @@ async def test_on_part(test_db):
             """
         )
         conn.commit()
-        await on_part(listener, '#channel', 'chitanda', None)
+        await on_part(listener, "#channel", "chitanda", None)
         cursor.execute(
             """
             SELECT 1 FROM irc_channels WHERE name = "#channel"
@@ -158,9 +157,9 @@ async def test_on_part(test_db):
 
 @pytest.mark.asyncio
 async def test_on_part_other_user(test_db):
-    listener = IRCListener(None, 'chitanda', 'irc.freenode.fake')
-    listener.nickname = 'chitanda'
-    listener.on_part = coroutine(lambda *args: True)
+    listener = IRCListener(None, "chitanda", "irc.freenode.fake")
+    listener.nickname = "chitanda"
+    listener.on_part = AsyncMock(return_value=True)
     with database() as (conn, cursor):
         cursor.execute(
             """
@@ -169,7 +168,7 @@ async def test_on_part_other_user(test_db):
             """
         )
         conn.commit()
-        await on_part(listener, '#channel', 'azul', None)
+        await on_part(listener, "#channel", "azul", None)
         cursor.execute(
             """
             SELECT 1 FROM irc_channels WHERE name = "#channel"
@@ -188,32 +187,31 @@ def test_get_channels_to_rejoin(test_db):
             """
         )
         conn.commit()
-        assert _get_channels_to_rejoin() == {'1': ['#1'], '2': ['#2']}
+        assert _get_channels_to_rejoin() == {"1": ["#1"], "2": ["#2"]}
 
 
 @pytest.mark.asyncio
 async def test_rejoin_channels():
-    listener1 = Mock(
-        performed=True, join=Mock(return_value=coroutine(lambda *args: True)())
-    )
-    listener2 = Mock(
-        performed=True, join=Mock(return_value=coroutine(lambda *args: True)())
-    )
-    bot = Mock(irc_listeners={'server1': listener1, 'server2': listener2})
-    channels = {'server1': ['a', 'b'], 'server2': ['c', 'd']}
+    listener1 = Mock(performed=True, join=AsyncMock(return_value=True))
+    listener2 = Mock(performed=True, join=AsyncMock(return_value=True))
+    bot = Mock(irc_listeners={"server1": listener1, "server2": listener2})
+    channels = {"server1": ["a", "b"], "server2": ["c", "d"]}
     await _rejoin_channels(bot, channels)
     assert not channels
-    assert listener1.join.call_args_list == [call('a'), call('b')]
-    assert listener2.join.call_args_list == [call('c'), call('d')]
+    assert listener1.join.call_args_list == [call("a"), call("b")]
+    assert listener2.join.call_args_list == [call("c"), call("d")]
 
 
 @pytest.mark.asyncio
 async def test_rejoin_channels_timeout(monkeypatch):
+    async def fut_true(a):
+        return True
+
     monkeypatch.setattr(
-        'chitanda.modules.irc_channels.asyncio',
-        Mock(sleep=coroutine(lambda *args: True)),
+        "chitanda.modules.irc_channels.asyncio",
+        Mock(sleep=fut_true),
     )
     bot = Mock(irc_listeners={})
-    channels = {'server1': ['a', 'b'], 'server2': ['c', 'd']}
+    channels = {"server1": ["a", "b"], "server2": ["c", "d"]}
     await _rejoin_channels(bot, channels)
-    assert 'server1' in channels and 'server2' in channels
+    assert "server1" in channels and "server2" in channels

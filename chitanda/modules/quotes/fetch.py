@@ -3,7 +3,7 @@ from chitanda.decorators import channel_only, register
 from chitanda.errors import BotError
 
 
-@register('quote')
+@register("quote")
 @channel_only
 async def call(message):
     """Fetch quotes by ID or one random quote from the channel."""
@@ -31,7 +31,7 @@ def fetch_quotes(cursor, target, listener, quote_ids):
             channel = ?
             AND listener = ?
             AND id IN ("""
-        + (','.join(['?'] * len(quote_ids)))
+        + (",".join(["?"] * len(quote_ids)))
         + """)
         ORDER BY id ASC
         """,
@@ -42,20 +42,17 @@ def fetch_quotes(cursor, target, listener, quote_ids):
         yield f'#{quote["id"]} by {quote["adder"]}: {quote["quote"]}'
         quote_ids.remove(quote["id"])
     if quote_ids:
-        yield (
-            f'Quote(s) {", ".join(str(qid) for qid in quote_ids)} '
-            'do not exist.'
-        )
+        yield (f'Quote(s) {", ".join(str(qid) for qid in quote_ids)} ' "do not exist.")
 
 
 def _parse_quote_ids(message):
     try:
-        quote_ids = [int(qid) for qid in message.split(' ')]
+        quote_ids = [int(qid) for qid in message.split(" ")]
     except ValueError:
-        raise BotError('Quote IDs must be integers.')
+        raise BotError("Quote IDs must be integers.")
 
     if len(quote_ids) > 3:
-        raise BotError('A maximum of three quotes may be queried at once.')
+        raise BotError("A maximum of three quotes may be queried at once.")
     return quote_ids
 
 
@@ -79,4 +76,4 @@ def _fetch_random_quote(cursor, target, listener):
     quote = cursor.fetchone()
     if quote:
         return f'#{quote["id"]} by {quote["adder"]}: {quote["quote"]}'
-    return 'This channel has no quotes saved.'
+    return "This channel has no quotes saved."

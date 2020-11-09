@@ -10,12 +10,12 @@ import click
 from chitanda import DATA_DIR
 from chitanda.errors import BotError
 
-DATABASE_PATH = DATA_DIR / 'db.sqlite3'
+DATABASE_PATH = DATA_DIR / "db.sqlite3"
 
 
 logger = logging.getLogger(__name__)
 
-Migration = namedtuple('Migration', 'path, version, source')
+Migration = namedtuple("Migration", "path, version, source")
 
 
 @contextmanager
@@ -36,7 +36,7 @@ def create_database_if_nonexistent():
             """
         )
         if not cursor.fetchone():
-            logger.info('Creating versions table.')
+            logger.info("Creating versions table.")
             cursor.execute(
                 """
                 CREATE TABLE versions (
@@ -51,10 +51,8 @@ def create_database_if_nonexistent():
 
 def confirm_database_is_updated():
     if calculate_migrations_needed():
-        if not len(sys.argv) == 2 or sys.argv[1] != 'migrate':
-            raise BotError(
-                'The database needs to be migrated. Run `chitanda migrate`.'
-            )
+        if not len(sys.argv) == 2 or sys.argv[1] != "migrate":
+            raise BotError("The database needs to be migrated. Run `chitanda migrate`.")
 
 
 def calculate_migrations_needed():
@@ -70,8 +68,8 @@ def calculate_migrations_needed():
 
 def _find_migrations():
     migrations = []
-    commands_path = Path(__file__).parent / 'modules'
-    for sql_path in commands_path.glob('**/*.sql'):
+    commands_path = Path(__file__).parent / "modules"
+    for sql_path in commands_path.glob("**/*.sql"):
         try:
             migrations.append(
                 Migration(
@@ -81,14 +79,12 @@ def _find_migrations():
                 )
             )
         except ValueError:
-            click.echo(f'Invalid migration name: {sql_path}.')
+            click.echo(f"Invalid migration name: {sql_path}.")
             raise click.Abort
     return migrations
 
 
 def _get_versions():
     with database() as (conn, cursor):
-        cursor.execute(
-            'SELECT source, MAX(version) FROM versions GROUP BY source'
-        )
-        return {r['source']: r[1] for r in cursor.fetchall()}
+        cursor.execute("SELECT source, MAX(version) FROM versions GROUP BY source")
+        return {r["source"]: r[1] for r in cursor.fetchall()}

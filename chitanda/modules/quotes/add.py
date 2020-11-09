@@ -2,9 +2,9 @@ from chitanda.database import database
 from chitanda.decorators import args, auth_only, channel_only, register
 
 
-@register('quote add')
+@register("quote add")
 @channel_only
-@args(r'(.+)')
+@args(r"(.+)")
 @auth_only
 async def call(message):
     """Add a quote to the database."""
@@ -25,7 +25,7 @@ async def call(message):
             ),
         )
         conn.commit()
-    return f'Added quote with ID {new_quote_id}.'
+    return f"Added quote with ID {new_quote_id}."
 
 
 def _get_quote_id(cursor, listener, target):

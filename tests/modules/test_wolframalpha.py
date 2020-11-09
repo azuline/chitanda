@@ -1,5 +1,6 @@
+from unittest.mock import Mock
+
 import pytest
-from mock import Mock
 from requests import RequestException
 
 from chitanda.errors import BotError
@@ -10,23 +11,23 @@ from chitanda.util import Message
 @pytest.mark.asyncio
 async def test_call(monkeypatch):
     monkeypatch.setattr(
-        'chitanda.modules.wolframalpha.config',
-        {'user_agent': 'chitanda', 'wolframalpha': {'appid': 'abc'}},
+        "chitanda.modules.wolframalpha.config",
+        {"user_agent": "chitanda", "wolframalpha": {"appid": "abc"}},
     )
     monkeypatch.setattr(
-        'chitanda.modules.wolframalpha.requests',
+        "chitanda.modules.wolframalpha.requests",
         Mock(
-            get=Mock(return_value=(Mock(text='its hot'))),
+            get=Mock(return_value=(Mock(text="its hot"))),
             RequestException=Exception,
         ),
     )
-    assert 'its hot' == await call(
+    assert "its hot" == await call(
         Message(
             bot=None,
             listener=None,
             target=None,
             author=None,
-            contents='hows the weather',
+            contents="hows the weather",
             private=False,
         )
     )
@@ -35,11 +36,11 @@ async def test_call(monkeypatch):
 @pytest.mark.asyncio
 async def test_call_error(monkeypatch):
     monkeypatch.setattr(
-        'chitanda.modules.wolframalpha.config',
-        {'user_agent': 'chitanda', 'wolframalpha': {'appid': 'abc'}},
+        "chitanda.modules.wolframalpha.config",
+        {"user_agent": "chitanda", "wolframalpha": {"appid": "abc"}},
     )
     monkeypatch.setattr(
-        'chitanda.modules.wolframalpha.requests',
+        "chitanda.modules.wolframalpha.requests",
         Mock(
             get=Mock(side_effect=RequestException),
             RequestException=RequestException,
@@ -52,7 +53,7 @@ async def test_call_error(monkeypatch):
                 listener=None,
                 target=None,
                 author=None,
-                contents='hows the weather',
+                contents="hows the weather",
                 private=False,
             )
         )

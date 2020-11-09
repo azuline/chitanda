@@ -6,34 +6,34 @@ from chitanda import CONFIG_DIR
 
 logger = logging.getLogger(__name__)
 
-CONFIG_PATH = CONFIG_DIR / 'config.json'
+CONFIG_PATH = CONFIG_DIR / "config.json"
 
 BLANK_CONFIG = {
-    'trigger_character': '.',
-    'user_agent': 'chitanda bot',
-    'irc_servers': {},
-    'discord_token': '',
-    'webserver': {'enable': False, 'port': 38428},
-    'modules': {
-        'global': [
-            'aliases',
-            'choose',
-            'help',
-            'irc_channels',
-            'reload',
-            'sed',
-            'urbandictionary',
-            'wolframalpha',
+    "trigger_character": ".",
+    "user_agent": "chitanda bot",
+    "irc_servers": {},
+    "discord_token": "",
+    "webserver": {"enable": False, "port": 38428},
+    "modules": {
+        "global": [
+            "aliases",
+            "choose",
+            "help",
+            "irc_channels",
+            "reload",
+            "sed",
+            "urbandictionary",
+            "wolframalpha",
         ]
     },
-    'aliases': {
-        'global': {
-            'c': 'choose',
-            'urban': 'urbandictionary',
-            'wa': 'wolframalpha',
+    "aliases": {
+        "global": {
+            "c": "choose",
+            "urban": "urbandictionary",
+            "wa": "wolframalpha",
         }
     },
-    'admins': {},
+    "admins": {},
 }
 
 
@@ -52,13 +52,13 @@ class Config:
 
     def _load_config(self):
         if CONFIG_PATH.exists():
-            with open(CONFIG_PATH, 'r') as cf:
+            with open(CONFIG_PATH, "r") as cf:
                 try:
                     return json.load(cf)
                 except json.decoder.JSONDecodeError:
                     pass
 
-        logger.critical('Config is not valid JSON or does not exist.')
+        logger.critical("Config is not valid JSON or does not exist.")
         sys.exit(1)
 
 

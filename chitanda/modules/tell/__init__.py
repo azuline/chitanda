@@ -6,7 +6,7 @@ from chitanda.decorators import args, channel_only, register
 
 logger = logging.getLogger(__name__)
 
-TIME_FORMAT = '%b %d, %H:%M:%S'
+TIME_FORMAT = "%b %d, %H:%M:%S"
 
 
 def setup(bot):  # pragma: no cover
@@ -18,21 +18,20 @@ async def tell_handler(message):
         return
 
     for row in _fetch_tells(message.target, message.listener, message.author):
-        time = datetime.fromisoformat(row['time']).strftime(TIME_FORMAT)
+        time = datetime.fromisoformat(row["time"]).strftime(TIME_FORMAT)
         logger.info(
-            f'Sent tell to {message.author} in {message.target} '
-            f'on {message.listener}.'
+            f"Sent tell to {message.author} in {message.target} "
+            f"on {message.listener}."
         )
         yield (
-            f'{message.author}: On {time}, {row["sender"]} said: '
-            f'{row["message"]}'
+            f'{message.author}: On {time}, {row["sender"]} said: ' f'{row["message"]}'
         )
-        _delete_tell(row['id'])
+        _delete_tell(row["id"])
 
 
-@register('tell')
+@register("tell")
 @channel_only
-@args(r'([^ ]+) (.+)')
+@args(r"([^ ]+) (.+)")
 async def call(message):
     """Save a message for a user the next time they are seen."""
     with database() as (conn, cursor):
@@ -52,10 +51,10 @@ async def call(message):
         )
         conn.commit()
     logger.info(
-        f'Added a tell for {message.args[0]} in {message.target} on '
-        f'{message.listener}'
+        f"Added a tell for {message.args[0]} in {message.target} on "
+        f"{message.listener}"
     )
-    return f'{message.args[0]} will be told when next seen.'
+    return f"{message.args[0]} will be told when next seen."
 
 
 def _fetch_tells(target, listener, author):
@@ -80,7 +79,7 @@ def _fetch_tells(target, listener, author):
 
 
 def _delete_tell(tell_id):
-    logger.debug(f'Deleting tell {tell_id}.')
+    logger.debug(f"Deleting tell {tell_id}.")
     with database() as (conn, cursor):
-        cursor.execute('DELETE FROM tells WHERE id = ?', (tell_id,))
+        cursor.execute("DELETE FROM tells WHERE id = ?", (tell_id,))
         conn.commit()

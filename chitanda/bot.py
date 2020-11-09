@@ -23,12 +23,12 @@ class Chitanda:
         self.discord_listener = None
         self.message_handlers = []
         self.response_handlers = []
-        if config['webserver']['enable']:
+        if config["webserver"]["enable"]:
             self.web_application = web.Application()
 
     def start(self):
         load_commands(self)
-        if hasattr(self, 'web_application'):
+        if hasattr(self, "web_application"):
             self.webserver = self._start_webserver()
 
         self.connect()
@@ -38,45 +38,45 @@ class Chitanda:
             return asyncio.ensure_future(
                 asyncio.get_event_loop().create_server(
                     self.web_application.make_handler(),
-                    port=int(config['webserver']['port']),
+                    port=int(config["webserver"]["port"]),
                 )
             )
         except ValueError:
-            logging.critical('Invalid port value for webserver.')
+            logging.critical("Invalid port value for webserver.")
             sys.exit(1)
 
     def connect(self):
-        logger.info('Initiating connection to listeners.')
-        if config['irc_servers']:
-            logger.info('IRC Servers found, connecting...')
+        logger.info("Initiating connection to listeners.")
+        if config["irc_servers"]:
+            logger.info("IRC Servers found, connecting...")
             self._connect_irc()
-        if config['discord_token']:
-            logger.info('Discord token found, connecting...')
+        if config["discord_token"]:
+            logger.info("Discord token found, connecting...")
             self._connect_discord()
 
     def _connect_irc(self):
-        for hostname, server in config['irc_servers'].items():
-            logger.info(f'Connecting to IRC server: {hostname}.')
+        for hostname, server in config["irc_servers"].items():
+            logger.info(f"Connecting to IRC server: {hostname}.")
             self.irc_listeners[hostname] = IRCListener(
-                self, server['nickname'], hostname
+                self, server["nickname"], hostname
             )
             asyncio.ensure_future(
                 self.irc_listeners[hostname].connect(
                     hostname,
-                    server['port'],
-                    tls=server['tls'],
-                    tls_verify=server['tls_verify'],
+                    server["port"],
+                    tls=server["tls"],
+                    tls_verify=server["tls_verify"],
                 )
             )
 
     def _connect_discord(self):
         self.discord_listener = DiscordListener(self)
-        self.discord_listener.run(config['discord_token'])
+        self.discord_listener.run(config["discord_token"])
 
     async def handle_message(self, message):
         logger.debug(
-            f'New message in {message.target} on {message.listener} '
-            f'from {message.author}: {message.contents}'
+            f"New message in {message.target} on {message.listener} "
+            f"from {message.author}: {message.contents}"
         )
         try:
             for handler in self.message_handlers:
@@ -84,8 +84,8 @@ class Chitanda:
 
             await self.dispatch_command(message)
         except BotError as e:
-            logger.info(f'Error triggered by {message.author}: {e}.')
-            await message.listener.message(message.target, f'Error: {e}')
+            logger.info(f"Error triggered by {message.author}: {e}.")
+            await message.listener.message(message.target, f"Error: {e}")
 
     async def dispatch_command(self, message):
         try:
@@ -96,7 +96,7 @@ class Chitanda:
             pass
 
     async def handle_response(self, response, source):
-        logger.debug(f'Response received of type: {type(response)}.')
+        logger.debug(f"Response received of type: {type(response)}.")
         if isinstance(response, AsyncGeneratorType):
             async for resp in response:
                 await self._handle_response_message(resp, source)

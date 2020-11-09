@@ -2,8 +2,8 @@ from chitanda.database import database
 from chitanda.decorators import args, auth_only, register
 
 
-@register('lastfm unset')
-@args(r'$')
+@register("lastfm unset")
+@args(r"$")
 @auth_only
 async def call(message):
     """Unset your Last.FM name."""
@@ -25,5 +25,5 @@ async def call(message):
                 (message.username, str(message.listener)),
             )
             conn.commit()
-            return 'Unset Last.FM username.'
-        return 'No Last.FM username to unset.'
+            return "Unset Last.FM username."
+        return "No Last.FM username to unset."

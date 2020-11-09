@@ -18,15 +18,13 @@ class DiscordListener(discord.Client):
         super().__init__()
 
     def __repr__(self):  # pragma: no cover
-        return 'DiscordListener'
+        return "DiscordListener"
 
     async def message(self, target, message, private=False, embed=False):
         if private:
             target = await self.get_dm_channel_id(target)
 
-        logger.info(
-            f'Adding "{message}" to Discord message queue for {target}.'
-        )
+        logger.info(f'Adding "{message}" to Discord message queue for {target}.')
         self.message_queue[target].append((message, embed))
 
         if not self.message_lock[target]:
@@ -34,13 +32,11 @@ class DiscordListener(discord.Client):
             try:
                 discord_channel = self.get_channel(int(target))
 
-                logger.info(
-                    f'Sending "{message}" on Discord to {discord_channel}.'
-                )
+                logger.info(f'Sending "{message}" on Discord to {discord_channel}.')
                 while self.message_queue[target]:
                     message, embed = self.message_queue[target].popleft()
                     await discord_channel.send(
-                        **{('embed' if embed else 'content'): message}
+                        **{("embed" if embed else "content"): message}
                     )
             finally:
                 self.message_lock[target] = False
@@ -65,7 +61,7 @@ class DiscordListener(discord.Client):
             await self.bot.handle_message(message)
 
     async def is_admin(self, user):
-        return str(user) in config['admins'].get(str(self), [])
+        return str(user) in config["admins"].get(str(self), [])
 
     async def is_authed(self, user):  # pragma: no cover
         return user

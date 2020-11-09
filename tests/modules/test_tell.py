@@ -1,5 +1,6 @@
+from unittest.mock import call, patch
+
 import pytest
-from mock import call, patch
 
 from chitanda.database import database
 from chitanda.modules.tell import _delete_tell, _fetch_tells
@@ -10,54 +11,54 @@ from chitanda.util import Message
 
 @pytest.mark.asyncio
 async def test_tell_handler():
-    with patch('chitanda.modules.tell._fetch_tells') as fetch:
-        with patch('chitanda.modules.tell._delete_tell') as delete:
+    with patch("chitanda.modules.tell._fetch_tells") as fetch:
+        with patch("chitanda.modules.tell._delete_tell") as delete:
             fetch.return_value = [
                 {
-                    'time': '2019-01-01T12:34:56',
-                    'sender': 'azul',
-                    'message': 'hi',
-                    'id': 1,
+                    "time": "2019-01-01T12:34:56",
+                    "sender": "azul",
+                    "message": "hi",
+                    "id": 1,
                 },
                 {
-                    'time': '2019-01-02T12:34:56',
-                    'sender': 'azul',
-                    'message': 'hi again',
-                    'id': 2,
+                    "time": "2019-01-02T12:34:56",
+                    "sender": "azul",
+                    "message": "hi again",
+                    "id": 2,
                 },
             ]
 
             responses = [
                 r
                 async for r in tell_handler(
-                    Message(None, None, None, 'newuser', None, False)
+                    Message(None, None, None, "newuser", None, False)
                 )
             ]
 
             assert responses == [
-                'newuser: On Jan 01, 12:34:56, azul said: hi',
-                'newuser: On Jan 02, 12:34:56, azul said: hi again',
+                "newuser: On Jan 01, 12:34:56, azul said: hi",
+                "newuser: On Jan 02, 12:34:56, azul said: hi again",
             ]
             assert delete.call_args_list == [call(1), call(2)]
 
 
 @pytest.mark.asyncio
 async def test_tell_handler_private():
-    with patch('chitanda.modules.tell._fetch_tells') as fetch:
-        with patch('chitanda.modules.tell._delete_tell'):
+    with patch("chitanda.modules.tell._fetch_tells") as fetch:
+        with patch("chitanda.modules.tell._delete_tell"):
             fetch.return_value = [
                 {
-                    'time': '2019-01-01T12:34:56',
-                    'sender': 'azul',
-                    'message': 'hi',
-                    'id': 1,
+                    "time": "2019-01-01T12:34:56",
+                    "sender": "azul",
+                    "message": "hi",
+                    "id": 1,
                 }
             ]
 
             assert not [
                 r
                 async for r in tell_handler(
-                    Message(None, None, None, 'newuser', None, private=True)
+                    Message(None, None, None, "newuser", None, private=True)
                 )
             ]
 
@@ -67,10 +68,10 @@ async def test_add_tell(test_db):
     await call_cmd(
         Message(
             bot=None,
-            listener='DiscordListener',
-            target='#chan',
-            author='azul',
-            contents='newuser hi again!',
+            listener="DiscordListener",
+            target="#chan",
+            author="azul",
+            contents="newuser hi again!",
             private=False,
         )
     )
@@ -103,7 +104,7 @@ def test_fetch_tells(test_db):
             """
         )
         conn.commit()
-    assert len(_fetch_tells('#chan', 'DiscordListener', 'azul')) == 1
+    assert len(_fetch_tells("#chan", "DiscordListener", "azul")) == 1
 
 
 def test_delete_tell(test_db):
@@ -120,5 +121,5 @@ def test_delete_tell(test_db):
         conn.commit()
     _delete_tell(1)
     with database() as (conn, cursor):
-        cursor.execute('SELECT COUNT(1) FROM tells')
+        cursor.execute("SELECT COUNT(1) FROM tells")
         assert 1 == cursor.fetchone()[0]

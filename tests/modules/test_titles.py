@@ -1,5 +1,6 @@
+from unittest.mock import Mock
+
 import pytest
-from mock import Mock
 
 from chitanda.listeners import IRCListener
 from chitanda.modules.titles import title_handler
@@ -8,16 +9,12 @@ from chitanda.util import Message
 
 @pytest.mark.asyncio
 async def test_title_handler(monkeypatch):
-    monkeypatch.setattr(
-        'chitanda.modules.titles.config', {'user_agent': 'chitanda'}
-    )
+    monkeypatch.setattr("chitanda.modules.titles.config", {"user_agent": "chitanda"})
     requests = Mock(RequestException=Exception)
-    requests.get.return_value.raw.read.return_value = DEMO_RESPONSE.encode(
-        'utf-8'
-    )
-    monkeypatch.setattr('chitanda.modules.titles.requests', requests)
+    requests.get.return_value.raw.read.return_value = DEMO_RESPONSE.encode("utf-8")
+    monkeypatch.setattr("chitanda.modules.titles.requests", requests)
 
-    'Title: azul\'s website!' == [
+    "Title: azul's website!" == [
         r
         async for r in title_handler(
             Message(
@@ -25,7 +22,7 @@ async def test_title_handler(monkeypatch):
                 listener=Mock(spec=IRCListener),
                 target=None,
                 author=None,
-                contents='Hi this is my website! https://d.az',
+                contents="Hi this is my website! https://d.az",
                 private=False,
             )
         )
@@ -34,9 +31,7 @@ async def test_title_handler(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_title_handler_no_title(monkeypatch):
-    monkeypatch.setattr(
-        'chitanda.modules.titles.config', {'user_agent': 'chitanda'}
-    )
+    monkeypatch.setattr("chitanda.modules.titles.config", {"user_agent": "chitanda"})
 
     assert not [
         r
@@ -46,9 +41,7 @@ async def test_title_handler_no_title(monkeypatch):
                 listener=Mock(spec=IRCListener),
                 target=None,
                 author=None,
-                contents=(
-                    'Hi this is my website! htps://d.az/oops/messed/it/up'
-                ),
+                contents=("Hi this is my website! htps://d.az/oops/messed/it/up"),
                 private=False,
             )
         )

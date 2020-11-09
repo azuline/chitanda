@@ -1,7 +1,7 @@
 # chitanda
 
-[![Build Status](https://travis-ci.org/azuline/chitanda.svg?branch=master)](https://travis-ci.org/azuline/chitanda)
-[![Coverage Status](https://coveralls.io/repos/github/azuline/chitanda/badge.svg?branch=master)](https://coveralls.io/github/azuline/chitanda?branch=master)
+[![CI](https://img.shields.io/github/workflow/status/azuline/chitanda/CI)](https://github.com/azuline/chitanda/actions)
+[![codecov](https://img.shields.io/codecov/c/github/azuline/chitanda?token=98M8XQLWLH)](https://codecov.io/gh/azuline/chitanda)
 [![Pypi](https://img.shields.io/pypi/v/chitanda.svg)](https://pypi.python.org/pypi/chitanda)
 [![Pyversions](https://img.shields.io/pypi/pyversions/chitanda.svg)](https://pypi.python.org/pypi/chitanda)
 [![Documentation Status](https://readthedocs.org/projects/chitanda/badge/?version=latest)](https://chitanda.readthedocs.io/en/latest/?badge=latest)

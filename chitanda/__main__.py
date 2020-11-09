@@ -16,8 +16,8 @@ def run():
         confirm_database_is_updated()
         cmdgroup()
     except BotError as e:
-        click.echo(f'Error: {e}')
+        click.echo(f"Error: {e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

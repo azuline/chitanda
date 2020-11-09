@@ -66,7 +66,7 @@ def _get_channels_to_rejoin():
             """
         )
         for row in cursor.fetchall():
-            channels[row['server']].append(row['name'])
+            channels[row["server"]].append(row["name"])
 
     return channels
 
@@ -79,24 +79,21 @@ async def _rejoin_channels(bot, channels):
     attempts = 0
     while True:
         for server, chan_names in list(channels.items()):
-            if (
-                server in bot.irc_listeners
-                and bot.irc_listeners[server].performed
-            ):
+            if server in bot.irc_listeners and bot.irc_listeners[server].performed:
                 for name in chan_names:
-                    logger.info(f'Rejoining IRC channel {name} on {server}.')
+                    logger.info(f"Rejoining IRC channel {name} on {server}.")
                     await bot.irc_listeners[server].join(name)
                 del channels[server]
 
         if not channels:
-            logger.info('All IRC channels rejoined.')
+            logger.info("All IRC channels rejoined.")
             break
 
         if attempts == 600:
             logger.info(
-                'Some IRC channels have not been rejoined: '
-                + ', '.join(
-                    f'{chan}@{server}'
+                "Some IRC channels have not been rejoined: "
+                + ", ".join(
+                    f"{chan}@{server}"
                     for server, chans in channels.items()
                     for chan in chans
                 )

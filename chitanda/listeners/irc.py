@@ -27,17 +27,17 @@ class IRCListener(
         super().__init__(nickname, username=nickname, realname=nickname)
 
     def __repr__(self):
-        return f'IRCListener@{self.hostname}'
+        return f"IRCListener@{self.hostname}"
 
     async def on_connect(self):  # pragma: no cover
-        await self.set_mode(self.nickname, 'BI')
+        await self.set_mode(self.nickname, "BI")
         await self._perform()
         await self._loop_interrupter()
 
     async def _perform(self):
-        logger.info(f'Running IRC perform commands on {self.hostname}.')
-        for cmd in config['irc_servers'][self.hostname]['perform']:
-            await self.raw(f'{cmd}\r\n')
+        logger.info(f"Running IRC perform commands on {self.hostname}.")
+        for cmd in config["irc_servers"][self.hostname]["perform"]:
+            await self.raw(f"{cmd}\r\n")
         self.performed = True
 
     async def _loop_interrupter(self):  # pragma: no cover
@@ -57,15 +57,14 @@ class IRCListener(
                 while self.message_queue:
                     try:
                         if time.time() - self.message_times[7] < 3:
-                            logger.info('Throttling outgoing IRC messages.')
+                            logger.info("Throttling outgoing IRC messages.")
                             await asyncio.sleep(3 / 8)
                     except IndexError:
                         pass
 
                     target, message, msg_time = self.message_queue.popleft()
                     logger.info(
-                        f'Sending "{message}" on IRC ({self.hostname}) '
-                        f'to {target}.'
+                        f'Sending "{message}" on IRC ({self.hostname}) ' f"to {target}."
                     )
                     await super().message(target, message)
                     self.message_times.appendleft(msg_time)
@@ -73,7 +72,7 @@ class IRCListener(
                 self.message_lock = False
 
     async def on_raw(self, message):  # pragma: no cover
-        logger.debug(f'Received raw IRC message: {message}'.rstrip())
+        logger.debug(f"Received raw IRC message: {message}".rstrip())
         await super().on_raw(message)
 
     async def on_channel_message(self, target, by, message):
@@ -102,10 +101,10 @@ class IRCListener(
 
     async def is_admin(self, user):
         info = await self.whois(user)
-        return info['identified'] and info['account'] in config['admins'].get(
+        return info["identified"] and info["account"] in config["admins"].get(
             str(self), []
         )
 
     async def is_authed(self, user):
         info = await self.whois(user)
-        return info['identified'] and info['account']
+        return info["identified"] and info["account"]

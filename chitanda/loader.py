@@ -19,7 +19,7 @@ def load_commands(bot, run_setup=True):
             else:
                 importlib.import_module(name)
 
-            if run_setup and hasattr(sys.modules[name], 'setup'):
+            if run_setup and hasattr(sys.modules[name], "setup"):
                 sys.modules[name].setup(bot)
 
 
@@ -28,9 +28,9 @@ def _is_module_enabled(full_name):
     return name in _get_all_enabled_modules()
 
 
-def _get_module_names(pkg_path='chitanda.modules'):
+def _get_module_names(pkg_path="chitanda.modules"):
     for module_info in iter_modules(sys.modules[pkg_path].__path__):
-        name = f'{pkg_path}.{module_info.name}'
+        name = f"{pkg_path}.{module_info.name}"
         if module_info.ispkg:
             importlib.import_module(name)
             for name_ in _get_module_names(name):
@@ -39,4 +39,4 @@ def _get_module_names(pkg_path='chitanda.modules'):
 
 
 def _get_all_enabled_modules():
-    return list(set(itertools.chain.from_iterable(config['modules'].values())))
+    return list(set(itertools.chain.from_iterable(config["modules"].values())))

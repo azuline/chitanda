@@ -11,9 +11,9 @@ from chitanda.util import trim_message
 
 logger = logging.getLogger(__name__)
 
-URL_REGEX = re.compile(r'.*(https?:\/\/[^ ]+)')
-TITLE_REGEX = re.compile(r'<title>(.*?)<\\?/title>')
-LB_REGEX = re.compile(r'\r|\n')
+URL_REGEX = re.compile(r".*(https?:\/\/[^ ]+)")
+TITLE_REGEX = re.compile(r"<title>(.*?)<\\?/title>")
+LB_REGEX = re.compile(r"\r|\n")
 
 
 def setup(bot):  # pragma: no cover
@@ -31,8 +31,8 @@ async def title_handler(message):
             if title:
                 yield title
                 logger.info(
-                    f'Title relayed from {match} in {message.target} '
-                    f'from {message.listener}'
+                    f"Title relayed from {match} in {message.target} "
+                    f"from {message.listener}"
                 )
 
 
@@ -42,15 +42,15 @@ async def _get_title(url):
             None,
             lambda: requests.get(
                 url,
-                headers={'User-Agent': config['user_agent']},
+                headers={"User-Agent": config["user_agent"]},
                 stream=True,
                 timeout=5,
             ),
         )
-        data = response.raw.read(512000, decode_content=True).decode('utf-8')
+        data = response.raw.read(512000, decode_content=True).decode("utf-8")
     except (requests.RequestException, UnicodeDecodeError):
         return
 
-    match = TITLE_REGEX.search(' '.join(LB_REGEX.split(html.unescape(data))))
+    match = TITLE_REGEX.search(" ".join(LB_REGEX.split(html.unescape(data))))
     if match:
-        return f'Title: {trim_message(match[1].strip(), length=400)}'
+        return f"Title: {trim_message(match[1].strip(), length=400)}"
