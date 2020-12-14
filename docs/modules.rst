@@ -41,13 +41,13 @@ should be configured to target that URL location.
 
 
 * ``secret`` - A secret key used to verify signed payloads from GitHub.
-* ``relays`` - A dictionary mapping repository IDs to lists of channels to relay
+* ``relay`` - A dictionary mapping repository IDs to lists of channels to relay
   webhook events to.
-* ``relays[][[listener]]`` - The identifier of the listener that the destinaton
+* ``relay[][[listener]]`` - The identifier of the listener that the destinaton
   channel belongs to. See the Configuration section for identifier formatting.
-* ``relays[][[channel]]`` - The channel to relay to. ``#channel`` for IRC and the
+* ``relay[][[channel]]`` - The channel to relay to. ``#channel`` for IRC and the
   channel ID for Discord.
-* ``relays[][[branches]]`` - If empty, commits to all branches will be reported.
+* ``relay[][[branches]]`` - If empty, commits to all branches will be reported.
   Otherwise, only commits to the listed branches will be reported.
 
 .. code-block:: json
@@ -55,7 +55,7 @@ should be configured to target that URL location.
    {
      "github_relay": {
        "secret": null,
-       "relays": {
+       "relay": {
          "1": [
            {
              "listener": "DiscordListener",
@@ -150,7 +150,7 @@ own sublist. More than two channels can be linked at once.
 .. code-block:: json
 
    {
-     "relays": [
+     "relay": [
        [
          {
            "listener": "IRCListener@irc.freenode.fake",
@@ -159,7 +159,7 @@ own sublist. More than two channels can be linked at once.
          {
            "listener": "DiscordListener",
            "channel": "12345",
-           "webhook": "something"
+           "webhook": "https://discord.com/api/webhooks/..."
          }
        ]
      ]
