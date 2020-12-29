@@ -5,7 +5,6 @@ import sys
 from chitanda import CONFIG_DIR, DATA_DIR
 from chitanda.config import config
 from chitanda.errors import InvalidListener, NoCommandFound
-from chitanda.listeners import DiscordListener
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +21,8 @@ class Message:
 
     @property
     def formatted_author(self):
+        from chitanda.listeners import DiscordListener
+
         if isinstance(self.listener, DiscordListener):
             return f"<@{self.author}>"
         return self.author
