@@ -5,6 +5,7 @@ import sys
 from chitanda import CONFIG_DIR, DATA_DIR
 from chitanda.config import config
 from chitanda.errors import InvalidListener, NoCommandFound
+from chitanda.listeners import DiscordListener
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +19,12 @@ class Message:
         self.contents = contents
         self.private = private
         self.raw = raw
+
+    @property
+    def formatted_author(self):
+        if isinstance(self.listener, DiscordListener):
+            return f"<@{self.author}>"
+        return self.author
 
     def call_command(self):
         if self.contents.startswith(config["trigger_character"]):

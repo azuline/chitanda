@@ -32,7 +32,11 @@ async def on_message(message):
             return await _substitute(match.groups(), message_log)
         elif not REGEX_WITH_PREFIX.match(message.contents):
             message_log.appendleft(
-                _format_message(message.contents, message.author, message.listener)
+                _format_message(
+                    message.contents,
+                    message.formatted_author,
+                    message.listener,
+                )
             )
 
 
@@ -54,7 +58,7 @@ def _attach_message_log(listener):
 
 def _get_author(listener):
     if isinstance(listener, DiscordListener):
-        return str(listener.user.id)
+        return f"<@{listener.user.id}>"
     elif isinstance(listener, IRCListener):
         return listener.nickname
 
@@ -129,8 +133,6 @@ def _compile_regex(regex, flags):
 
 
 def _format_message(message, author, listener):
-    if isinstance(listener, DiscordListener):
-        author = f"<@{author}>"
     if isinstance(listener, IRCListener):
         message = irc_unstyle(message)
     return f"<{author}> {message}"

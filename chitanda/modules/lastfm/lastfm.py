@@ -28,7 +28,9 @@ async def call(message):
     )
     time_since = _calculate_time_since_played(response, message.author)
     tags = await _get_track_tags(track, album, artist)
-    return _format_response(message.author, track, album, artist, tags, time_since)
+    return _format_response(
+        message.formatted_author, track, album, artist, tags, time_since
+    )
 
 
 def _get_lastfm_nick(username, listener):
