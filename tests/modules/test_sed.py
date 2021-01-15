@@ -76,7 +76,7 @@ async def test_on_response():
 def test_get_author_discord():
     listener = Mock(spec=DiscordListener)
     listener.user = Mock(id=12345)
-    assert "12345" == _get_author(listener)
+    assert "<@12345>" == _get_author(listener)
 
 
 @pytest.mark.asyncio

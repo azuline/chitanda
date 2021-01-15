@@ -39,14 +39,14 @@ async def test_lastfm(test_db, monkeypatch):
                 __str__=lambda *a: "DiscordListener",
             ),
             target="#chan",
-            author="azul",
+            author="123",
             contents="",
             private=False,
         )
     )
 
     assert response == (
-        "azul is now playing Forgotten Love (Claptone Remix) by Aurora "
+        "<@123> is now playing Forgotten Love (Claptone Remix) by Aurora "
         "from Forgotten Love (Claptone Remix) "
         "[tags: trance / Melodic Death Metal / dance]"  # lol nice tag
     )

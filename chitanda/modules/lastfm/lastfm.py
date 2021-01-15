@@ -20,16 +20,21 @@ API_URL = "https://ws.audioscrobbler.com/2.0/"
 async def call(message):
     """Relay your currently playing Last.FM track."""
     lastfm = _get_lastfm_nick(message.username, message.listener)
-    response = await _get_now_playing(lastfm, message.author)
+    response = await _get_now_playing(lastfm, message.formatted_author)
     track, album, artist = (
         response["name"],
         response["album"]["#text"],
         response["artist"]["#text"],
     )
-    time_since = _calculate_time_since_played(response, message.author)
+    time_since = _calculate_time_since_played(response, message.formatted_author)
     tags = await _get_track_tags(track, album, artist)
     return _format_response(
-        message.formatted_author, track, album, artist, tags, time_since
+        message.formatted_author,
+        track,
+        album,
+        artist,
+        tags,
+        time_since,
     )
 
 
@@ -49,7 +54,7 @@ def _get_lastfm_nick(username, listener):
         return row["lastfm"]
 
 
-async def _get_now_playing(lastfm, author=None):
+async def _get_now_playing(lastfm, formatted_author=None):
     try:
         response = (
             await asyncio.get_event_loop().run_in_executor(
@@ -79,11 +84,11 @@ async def _get_now_playing(lastfm, author=None):
         logger.error(message)
         raise BotError(message)
     if not response["recenttracks"]["track"]:
-        raise BotError(f"{author} has never scrobbled before.")
+        raise BotError(f"{formatted_author} has never scrobbled before.")
     return response["recenttracks"]["track"][0]
 
 
-def _calculate_time_since_played(track, author=None):
+def _calculate_time_since_played(track, formatted_author=None):
     if "@attr" in track:
         return
 
@@ -103,7 +108,7 @@ def _calculate_time_since_played(track, author=None):
 
     if diff.days > 0 or hours > 0:
         raise BotError(
-            f"{author} is not playing anything (last seen: "
+            f"{formatted_author} is not playing anything (last seen: "
             f'{" ".join(time_since)} ago)'
         )
 
