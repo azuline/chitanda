@@ -65,3 +65,7 @@ class DiscordListener(discord.Client):
 
     async def is_authed(self, user):  # pragma: no cover
         return user
+
+    async def find_prefix_matches(self, channel_id, prefix):
+        channel = self.get_channel(channel_id)
+        return await channel.guild.query_members(prefix)

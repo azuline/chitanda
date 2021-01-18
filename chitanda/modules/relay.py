@@ -129,9 +129,28 @@ async def _relay_discord(listener, target, author, message):
     For Discord, relay the message using a webhook. Requires server admin to
     configure a webhook endpoint.
     """
+    message = await _substitute_discord_nicknames(listener, target, message)
     async with aiohttp.ClientSession() as session:
         webhook = Webhook.from_url(
             target["webhook"],
             adapter=AsyncWebhookAdapter(session),
         )
         await webhook.send(message, username=author)
+
+
+async def _substitute_discord_nicknames(listener, target, message):
+    if "@" in message:
+        for match in re.finditer("@([^ ]+)", message):
+            members = await listener.find_prefix_matches(
+                int(target["channel"]), match[1]
+            )
+            for m in members:
+                message_name = message[
+                    match.start(1) : match.start(1) + len(m.display_name)
+                ]
+                if m.display_name.lower() == message_name.lower():
+                    message = message.replace(
+                        f"@{m.display_name.lower()}", f"<@{m.id}>"
+                    )
+
+    return message
